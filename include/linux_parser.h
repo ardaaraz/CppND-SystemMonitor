@@ -4,6 +4,7 @@
 #include <fstream>
 #include <regex>
 #include <string>
+#include <unistd.h>
 
 namespace LinuxParser {
 // Paths
@@ -40,6 +41,11 @@ enum CPUStates {
   kGuest_,
   kGuestNice_
 };
+const int kStartTime = 22;
+const int kUTime     = 14;
+const int kSTime     = 15;
+const int kCUTime    = 16;
+const int kCSTme     = 17;
 std::vector<std::string> CpuUtilization();
 long Jiffies();
 long ActiveJiffies();
@@ -52,6 +58,7 @@ std::string Ram(int pid);
 std::string Uid(int pid);
 std::string User(int pid);
 long int UpTime(int pid);
+float CpuUtilization(int pid); // Added for calculation of cpu utilization of process
 };  // namespace LinuxParser
 
 #endif
