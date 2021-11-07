@@ -22,7 +22,7 @@ class Process {
   void UpTime(long int time);                     // Setter for process start time            
   bool operator<(Process const& a) const;         // Overlaod < operator
 
-  // TODO: Declare any necessary private members
+  // Declare any necessary private members
  private:
   int pid_;
   std::string user_;
