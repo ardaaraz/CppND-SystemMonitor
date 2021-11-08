@@ -31,6 +31,7 @@ string LinuxParser::OperatingSystem() {
       }
     }
   }
+  filestream.close();
   return value;
 }
 
@@ -44,6 +45,7 @@ string LinuxParser::Kernel() {
     std::istringstream linestream(line);
     linestream >> os >> version >> kernel;
   }
+  stream.close();
   return kernel;
 }
 
@@ -97,7 +99,8 @@ float LinuxParser::MemoryUtilization()
       }
     }
   }
-  return (float)(MemTotal - MemFree) / MemTotal;
+  stream.close();
+  return static_cast<float>(MemTotal - MemFree) / MemTotal;
 }
 
 // Read and return the system uptime
@@ -112,6 +115,7 @@ long LinuxParser::UpTime()
     std::istringstream linestream(line);
     linestream >> upTime >> idleTime;
   }
+  stream.close();
   return upTime;
 }
 
@@ -142,6 +146,7 @@ long LinuxParser::ActiveJiffies(int pid) {
       i++;
     }
   }
+  stream.close();
   long total_time = uTime + sTime + cuTime + csTime;
   return total_time / sysconf(_SC_CLK_TCK);
 }
@@ -204,6 +209,7 @@ vector<string> LinuxParser::CpuUtilization() {
       cpuUtilVec.push_back(value);
     }
   }
+  stream.close();
   return cpuUtilVec;
 }
 
@@ -228,6 +234,7 @@ int LinuxParser::TotalProcesses()
       }
     }
   }
+  stream.close();
   return value;
 }
 
@@ -251,6 +258,7 @@ int LinuxParser::RunningProcesses() {
       }
     }
   }
+  stream.close();
   return value; 
 }
 
@@ -263,6 +271,7 @@ string LinuxParser::Command(int pid)
   {
     std::getline(stream, line);
   }
+  stream.close();
   return line; 
 }
 
@@ -280,13 +289,14 @@ string LinuxParser::Ram(int pid)
       std::istringstream linestream(line);
       while(linestream >> key >> value)
       {
-        if(key == "VmSize:")
+        if(key == "VmRSS:") // Use VmRSS instead of VmSize to get exact physical memory being used 
         {
           return std::to_string(value / 1000);
         }
       }
     }
   }
+  stream.close();
   return std::to_string(value);
 }
 
@@ -310,6 +320,7 @@ string LinuxParser::Uid(int pid) {
       }
     }
   }
+  stream.close();
   return value1; 
 }
 
@@ -332,6 +343,7 @@ string LinuxParser::User(int pid) {
       }
     }
   }
+  filestream.close();
   return user;
 }
 
@@ -354,11 +366,12 @@ long LinuxParser::UpTime(int pid) {
     {
       if(i == kStartTime)
       {
-        upTime = value;
         break;
       }
       i++;
     }
   }
-  return (upTime) / sysconf(_SC_CLK_TCK); 
+  stream.close();
+  upTime = UpTime() - (value / sysconf(_SC_CLK_TCK));
+  return upTime; 
 }

@@ -30,7 +30,7 @@ vector<Process>& System::Processes() {
         process.User(LinuxParser::User(pid));
         process.UpTime(LinuxParser::UpTime(pid));
         process.CpuUtilization(LinuxParser::CpuUtilization(pid));
-        processes_.push_back(process);
+        processes_.emplace_back(process);
     }
     std::sort(processes_.rbegin(), processes_.rend());
     return processes_; 
